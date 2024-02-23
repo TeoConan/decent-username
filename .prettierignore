@@ -1,0 +1,3 @@
+*.min.*
+./node_modules
+./build

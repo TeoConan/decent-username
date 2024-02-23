@@ -1,0 +1,30 @@
+{
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": true,
+    "bracketSpacing": true,
+    "bracketSameLine": true,
+    "singleQuote": true,
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true,
+    "importOrder": [
+        "^(@adonisjs|@ioc)(.*)$",
+        "^App/(?!.*(?:Validator|Contract|Dto)$).*$",
+        "^(.*)Validator$",
+        "^(.*)Contract$",
+        "^(.*)Dto$",
+        "^@core/(.*)$",
+        "^@server/(.*)$",
+        "^@ui/(.*)$",
+        "^[./]"
+    ],
+    "endOfLine": "lf",
+    "overrides": [
+        {
+            "files": "src/**/*.hbs",
+            "options": {
+                "printWidth": 140
+            }
+        }
+    ]
+}
