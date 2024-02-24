@@ -13,7 +13,7 @@
         },
         {
             "type": "shell",
-            "label": "node --watch --loader=ts-node/esm ./src/app.ts",
+            "label": "node --watch --loader=ts-node/esm ./src/**/*",
             "command": "tsc",
             "problemMatcher": "$tsc",
             "dependsOrder": "sequence",

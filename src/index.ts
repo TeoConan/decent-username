@@ -5,9 +5,11 @@ enum Result {
 }
 
 export class DecentUsername {
+    private specialsChars: string[] = [];
     private reservedWords: string[] = [];
-    private mappers: any;
     private customWords: string[] = [];
+    private mappers: any;
+
     private engine: any = null;
 
     private possibilities: string[];
@@ -15,7 +17,9 @@ export class DecentUsername {
     constructor() {
         var BadWords = require('bad-words');
         var frenchBadwordsList = require('french-badwords-list');
+        this.specialsChars = require('./res/specialschars.json');
         this.reservedWords = require('./res/reserved.json');
+        this.mappers = require('./res/mappers.json');
 
         this.engine = new BadWords({ placeHolder: '' });
         this.engine.addWords(...this.reservedWords);
@@ -23,19 +27,21 @@ export class DecentUsername {
     }
 
     validate(text: string): Result {
+        this.possibilities = this.getPosibilities(text);
         return Result.Ok;
     }
 
     getPosibilities(text: string): string[] {
         let output: string[] = [];
+        const keys = Object.keys(this.mappers);
 
-        this.mappers.forEach((charsToReplace: string, mapLetter: string) => {
-            console.log(mapLetter, charsToReplace);
+        for (const mapLetter of keys) {
+            const charsToReplace = Reflect.get(this.mappers, mapLetter);
 
             for (const char of charsToReplace) {
                 output.push(text.replace(char, mapLetter));
             }
-        });
+        }
 
         return output;
     }
