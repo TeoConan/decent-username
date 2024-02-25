@@ -47,7 +47,7 @@ export class DecentUsername {
             return;
         }
 
-        if (this.text.length >= this.maxLength) {
+        if (this.text.length > this.maxLength) {
             this.violationText = this.text;
             this.problemType = DecentUsernameProblem.MaxLengthViolation;
             return;
@@ -57,8 +57,8 @@ export class DecentUsername {
             this.text = this.text.replaceAll(c, '');
         });
 
-        this.variants = this.getVariations();
         this.clearRepeat();
+        this.variants = this.getVariations();
 
         for (const p of this.variants) {
             for (const r of this.reservedWords) {
@@ -99,7 +99,7 @@ export class DecentUsername {
             output.push(text[i]);
         }
 
-        this.variants.push(output.join());
+        this.variants.push(output.join(''));
     }
 
     get(): string {

@@ -21,10 +21,8 @@ const tests = [
     'settings',
     'account',
     'butterorgasm',
-    //...testUsernames,
+    ...testUsernames,
 ];
-
-var testsPassedCounter = 0;
 
 console.log('');
 console.log('');
@@ -32,6 +30,7 @@ console.log(chalk.bold('\t\tTests'));
 console.log('');
 console.log('');
 
+let errorCounter = 0;
 const start = new Date().getTime();
 
 for (const username of tests) {
@@ -49,28 +48,31 @@ for (const username of tests) {
             )
         );
 
-        continue;
+        errorCounter++;
     }
-
-    testsPassedCounter++;
 }
 
-let elapsed = (new Date().getTime() - start) / 1000;
-
-console.log(
-    logSymbols.success,
-    chalk.bold('Tests passed : ' + testsPassedCounter + '/' + tests.length)
-);
+const elapsed = (new Date().getTime() - start) / 1000;
 
 const timePerHit = elapsed / tests.length;
 let color = chalk.green;
 let icon = logSymbols.success;
 
-if (timePerHit > 0.0005) {
+if (timePerHit > 0.0001) {
     color = chalk.red;
     icon = logSymbols.warning;
 }
 
 console.log('');
-console.log(icon, color('Time spent : ' + elapsed + 'ms'));
-console.log(icon, color('Time spent per hit : ' + timePerHit));
+console.log(
+    logSymbols.error,
+    chalk.red(
+        'Non decent usernames found : ' + errorCounter + '/' + tests.length
+    )
+);
+console.log(icon, color('Time spent : ' + elapsed + 's'));
+console.log(
+    icon,
+    color('Time spent per hit : ' + timePerHit.toString().slice(0, 8))
+);
+console.log('');
