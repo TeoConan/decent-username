@@ -5,7 +5,6 @@
             "name": "Run test",
             "type": "node",
             "request": "launch",
-            "preLaunchTask": "build",
             "program": "${workspaceFolder}/build/test.js",
             "cwd": "${workspaceFolder}",
             "runtimeExecutable": "node",
