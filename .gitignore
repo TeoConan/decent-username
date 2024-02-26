@@ -145,3 +145,4 @@ dist
 
 _*
 build/**/*
+src/.DS_Store

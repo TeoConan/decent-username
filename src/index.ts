@@ -7,7 +7,6 @@ import reservedWords from './ressources/reserved.json' assert { type: 'json' };
 import lettersMap from './ressources/lettersMap.json' assert { type: 'json' };
 // Banned words, like injures etc...
 import badWords from './ressources/badWords.json' assert { type: 'json' };
-import chalk from 'chalk';
 
 /**
  * Type of problem (or not) that the algorithm found
@@ -40,6 +39,8 @@ export class DecentUsername {
 
     // Incriminated text
     public violationText: string;
+    // Incriminated word's position in string
+    public violationPosition: number[];
 
     // List of special chars to remove
     public specialsChars: string[];
@@ -70,6 +71,23 @@ export class DecentUsername {
     }
 
     /**
+     * Get current text.
+     * @returns Current text to analyse
+     */
+    public get(): string {
+        return this.text;
+    }
+
+    /**
+     * Get if the analysed text is valid
+     *
+     * @returns true, text is decent, false it's not decent
+     */
+    public isValid(): boolean {
+        return this.problemType == DecentUsernameProblem.Ok;
+    }
+
+    /**
      * Process the given text to find any banned ou reserved words inside.
      *
      * @remarks
@@ -78,6 +96,7 @@ export class DecentUsername {
      * @returns Return if a problem has been found
      */
     validate(): boolean {
+        // Length check
         if (this.text.length < this.minLength) {
             this.violationText = this.text;
             this.problemType = DecentUsernameProblem.MinLengthViolation;
@@ -90,28 +109,34 @@ export class DecentUsername {
             return false;
         }
 
-        this.forChars(this.specialsChars, (i, c) => {
-            this.text = this.text.replaceAll(c, '');
-        });
+        // Main text process
+        this.removeSpecialChars();
+        this.variants = this.clearRepeat(this.text);
 
-        this.clearRepeat();
-        this.variants = this.getVariations();
+        // Variations processing
+        this.variants = [...this.variants, ...this.getVariations(this.text)];
 
-        for (const p of this.variants) {
+        // Variations validation
+        for (const v of this.variants) {
             for (const r of this.reservedWords) {
-                if (p == r) {
+                if (v == r) {
                     this.violationText = this.text;
                     this.problemType = DecentUsernameProblem.Reserved;
                     return false;
                 }
             }
 
-            let highlight = '';
+            let position: number[] = [];
             for (const b of this.badWords) {
-                if (this.text.includes(b)) {
-                    highlight = chalk.red(chalk.bold(chalk.underline(b)));
-                    this.violationText = this.text.replaceAll(b, highlight);
+                if (v.includes(b)) {
+                    // Get violation word's position
+                    position[0] = v.indexOf(b);
+                    position[1] = position[0] + v.length;
+
+                    this.violationPosition = position;
+                    this.violationText = v;
                     this.problemType = DecentUsernameProblem.Banned;
+                    return false;
                 }
             }
         }
@@ -125,42 +150,28 @@ export class DecentUsername {
      *
      * @returns Push in variants the cleaned version of text
      */
-    clearRepeat() {
-        const text = this.text.split('');
+    private clearRepeat(input: string): string[] {
+        const text = input.split('');
+        const variants = [input];
         let output = [];
+        let changes = false;
 
-        for (let i = 0; i < this.text.length; i++) {
-            // Si le charactère courant n'est pas 0 ou max et que les 3 lettres courante ne sont pas égaux, alors
-            if (
-                i != 0 &&
-                i != text.length &&
-                text[i - 1] == text[i] &&
-                text[i] == text[i + 1]
-            ) {
-                continue;
+        // While for a recursive cleaning,
+        // Add one variation by cleaning loop
+        while (!changes) {
+            changes = false;
+            for (let i = 0; i < this.text.length; i++) {
+                if (i != 0 && text[i - 1] == text[i]) {
+                    changes = true;
+                    continue;
+                }
+
+                output.push(text[i]);
             }
-
-            output.push(text[i]);
         }
 
-        this.variants.push(output.join(''));
-    }
-
-    /**
-     * Get current text.
-     * @returns Current text to analyse
-     */
-    get(): string {
-        return this.text;
-    }
-
-    /**
-     * Get if the analysed text is valid
-     *
-     * @returns true, text is decent, false it's not decent
-     */
-    isValid(): boolean {
-        return this.problemType == DecentUsernameProblem.Ok;
+        variants.push(output.join(''));
+        return variants;
     }
 
     /**
@@ -175,8 +186,10 @@ export class DecentUsername {
      *
      * @beta
      */
-    removeSpecialChars(text: string): string {
-        return text;
+    public removeSpecialChars(): void {
+        this.forChars(this.specialsChars, (i, c) => {
+            this.text = this.text.replaceAll(c, '');
+        });
     }
 
     /**
@@ -186,12 +199,21 @@ export class DecentUsername {
      * Example : for text "b00ßs", variations will be "bo0ßs", "b00ßs", "booßs", "boobs", etc...
      * @returns A list of possible variations for the current text
      */
-    private getVariations(): string[] {
-        let output: string[] = [this.text];
+    private getVariations(text: string): string[] {
+        let output: string[] = [text];
 
         this.forChars(this.lettersMap, (mapLetter, char) => {
-            const changedText = this.text.replaceAll(char, mapLetter);
-            if (changedText != this.text) output.push(changedText);
+            let changedText = text.replace(char, mapLetter);
+
+            if (changedText != text) {
+                // Recursive changes
+                output = [...output, ...this.getVariations(changedText)];
+            }
+        });
+
+        // Remove lines duplications
+        output = output.filter(function (value, index, array) {
+            return array.indexOf(value) === index;
         });
 
         return output;
@@ -206,7 +228,7 @@ export class DecentUsername {
     private forChars(
         input: any,
         callback: (i: string, v: string, line: string) => void
-    ) {
+    ): void {
         const keys = Object.keys(input);
 
         for (const key of keys) {

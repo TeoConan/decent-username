@@ -1,64 +1,51 @@
 import { DecentUsername, DecentUsernameProblem } from './index.js';
-import testUsernames from './ressources/testsUsername.json' assert { type: 'json' };
-import testUsernamesVariations from './ressources/testsUsernameVariations.json' assert { type: 'json' };
+import tests from './ressources/testsUsername.json' assert { type: 'json' };
 
 import logSymbols from 'log-symbols';
 import chalk from 'chalk';
 
-const tests = [
-    'zoochore',
-    'b00ßs',
-    '"tropppe`="',
-    '"asser`="',
-    '"assssswer`="',
-    '"access$^ù`="',
-    '"access$^`="',
-    'teo"',
-    'tropp"',
-    '"',
-    'asspicture',
-    'pornpony',
-    'hitler3302',
-    'hitleer3302',
-    'hitl3r3302',
-    'settings',
-    'account',
-    'butterorgasm',
-    ...testUsernamesVariations,
-    ...testUsernames,
-];
+/**
+ * Class to test a long list of username, to try every possibilities
+ */
 
-console.log('');
-console.log('');
-console.log(chalk.bold('\t\tTests'));
-console.log('');
+console.log(chalk.bold('Tests'));
 console.log('');
 
 let errorCounter = 0;
+// Record execution time
 const start = new Date().getTime();
 
 for (const username of tests) {
     const du = new DecentUsername(username);
     du.validate();
 
-    if (!du.isValid() && du.problemType == DecentUsernameProblem.Banned) {
+    if (!du.isValid()) {
+        const highlight = chalk.red(chalk.underline(du.violationText));
         console.log(
-            `${logSymbols.warning} ${du.violationText} (${DecentUsernameProblem[du.problemType]})`
+            `${logSymbols.warning} ${highlight} (${DecentUsernameProblem[du.problemType]})`
         );
 
         errorCounter++;
+    } else {
+        console.log(`${logSymbols.success} ${du.get()}`);
     }
 }
 
+// Get in second the execution time
 const elapsed = (new Date().getTime() - start) / 1000;
-
 const timePerHit = elapsed / tests.length;
+let strTimePerHit = timePerHit.toString();
+
 let color = chalk.green;
 let icon = logSymbols.success;
 
 if (timePerHit > 0.0001) {
     color = chalk.red;
     icon = logSymbols.warning;
+
+    if (strTimePerHit.length < 8)
+        strTimePerHit = strTimePerHit.slice(0, strTimePerHit.length);
+    else strTimePerHit = strTimePerHit.slice(0, 8);
 }
 
 console.log('');
@@ -69,8 +56,5 @@ console.log(
     )
 );
 console.log(icon, color('Time spent : ' + elapsed + 's'));
-console.log(
-    icon,
-    color('Time spent per hit : ' + timePerHit.toString().slice(0, 8))
-);
+console.log(icon, color('Time spent per hit : ' + strTimePerHit));
 console.log('');
