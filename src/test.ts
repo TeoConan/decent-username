@@ -1,10 +1,13 @@
 import { DecentUsername, DecentUsernameProblem } from './index.js';
 import testUsernames from './ressources/testsUsername.json' assert { type: 'json' };
+import testUsernamesVariations from './ressources/testsUsernameVariations.json' assert { type: 'json' };
 
 import logSymbols from 'log-symbols';
 import chalk from 'chalk';
 
 const tests = [
+    'zoochore',
+    'b00ßs',
     '"tropppe`="',
     '"asser`="',
     '"assssswer`="',
@@ -21,6 +24,7 @@ const tests = [
     'settings',
     'account',
     'butterorgasm',
+    ...testUsernamesVariations,
     ...testUsernames,
 ];
 
@@ -37,15 +41,9 @@ for (const username of tests) {
     const du = new DecentUsername(username);
     du.validate();
 
-    if (!du.isValid()) {
+    if (!du.isValid() && du.problemType == DecentUsernameProblem.Banned) {
         console.log(
-            logSymbols.warning,
-            chalk.yellow(
-                username +
-                    ' is not valid (' +
-                    DecentUsernameProblem[du.problemType] +
-                    ')'
-            )
+            `${logSymbols.warning} ${du.violationText} (${DecentUsernameProblem[du.problemType]})`
         );
 
         errorCounter++;
