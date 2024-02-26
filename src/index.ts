@@ -24,6 +24,8 @@ export enum DecentUsernameProblem {
  * Main class of the project
  */
 export class DecentUsername {
+    private readonly alphabet: string[];
+
     // Minimum username length to respect
     public readonly minLength: number;
     // Maximum username length to respect
@@ -68,6 +70,9 @@ export class DecentUsername {
         this.reservedWords = reservedWords;
         this.lettersMap = lettersMap;
         this.badWords = badWords;
+
+        const alpha = Array.from(Array(26)).map((e, i) => i + 97);
+        this.alphabet = alpha.map((x) => String.fromCharCode(x));
     }
 
     /**
@@ -145,32 +150,33 @@ export class DecentUsername {
     }
 
     /**
-     * Replace all series of 3 letters or more by a only 2 letters maximum.
-     * Example : "haapppyyyy" will be "haappyy"
+     * Replace all series of repeating letters by only one.
+     * Example : "haapppyyyy" will be :
+     *      [happpyyyy, happyyyy, hapyyyy, hapyyyy, etc..]
      *
-     * @returns Push in variants the cleaned version of text
+     * @returns New variants of text
      */
     private clearRepeat(input: string): string[] {
-        const text = input.split('');
         const variants = [input];
-        let output = [];
-        let changes = false;
+        let repetition = false;
+        let change = '';
 
-        // While for a recursive cleaning,
-        // Add one variation by cleaning loop
-        while (!changes) {
-            changes = false;
-            for (let i = 0; i < this.text.length; i++) {
-                if (i != 0 && text[i - 1] == text[i]) {
-                    changes = true;
-                    continue;
+        // For every letters of the alphabet
+        for (const letter of this.alphabet) {
+            // Clear all repeatition until no one left
+            do {
+                repetition = false;
+                change = input.replace(letter.repeat(2), letter);
+
+                if (change != input) {
+                    repetition = true;
+                    // Add it in variations
+                    variants.push(change);
+                    input = change;
                 }
-
-                output.push(text[i]);
-            }
+            } while (repetition);
         }
 
-        variants.push(output.join(''));
         return variants;
     }
 
