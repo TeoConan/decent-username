@@ -7,7 +7,6 @@ import chalk from 'chalk';
 /**
  * Class to test a long list of username, to try every possibilities
  */
-
 console.log(chalk.bold('Tests'));
 console.log('');
 
@@ -39,7 +38,7 @@ let strTimePerHit = timePerHit.toString();
 let color = chalk.green;
 let icon = logSymbols.success;
 
-if (timePerHit > 0.0001) {
+if (timePerHit > 0.0002) {
     color = chalk.red;
     icon = logSymbols.warning;
 
@@ -51,10 +50,8 @@ if (timePerHit > 0.0001) {
 console.log('');
 console.log(
     logSymbols.error,
-    chalk.red(
-        'Non decent usernames found : ' + errorCounter + '/' + tests.length
-    )
+    chalk.red(`Non decent usernames found : ${errorCounter} / ${tests.length}`)
 );
-console.log(icon, color('Time spent : ' + elapsed + 's'));
-console.log(icon, color('Time spent per hit : ' + strTimePerHit));
+console.log(icon, color(`Time spent : ${elapsed} seconds`));
+console.log(icon, color(`Time spent per hit : ${strTimePerHit}`));
 console.log('');

@@ -116,10 +116,15 @@ export class DecentUsername {
 
         // Main text process
         this.removeSpecialChars();
-        this.variants = this.clearRepeat(this.text);
 
-        // Variations processing
-        this.variants = [...this.variants, ...this.getVariations(this.text)];
+        // Get all possibles variation of text
+        this.variants = [this.text, ...this.getVariations(this.text)];
+        this.variants = [...this.variants, ...this.clearRepeat(this.variants)];
+
+        // Remove duplications
+        this.variants = this.variants.filter(function (value, index, array) {
+            return array.indexOf(value) === index;
+        });
 
         // Variations validation
         for (const v of this.variants) {
@@ -156,25 +161,28 @@ export class DecentUsername {
      *
      * @returns New variants of text
      */
-    private clearRepeat(input: string): string[] {
-        const variants = [input];
-        let repetition = false;
-        let change = '';
+    private clearRepeat(inputs: string[]): string[] {
+        const variants = [];
 
-        // For every letters of the alphabet
-        for (const letter of this.alphabet) {
-            // Clear all repeatition until no one left
-            do {
-                repetition = false;
-                change = input.replace(letter.repeat(2), letter);
+        for (let input of inputs) {
+            let repetition = false;
+            let change = '';
 
-                if (change != input) {
-                    repetition = true;
-                    // Add it in variations
-                    variants.push(change);
-                    input = change;
-                }
-            } while (repetition);
+            // For every letters of the alphabet
+            for (const letter of this.alphabet) {
+                // Clear all repeatition until no one left
+                do {
+                    repetition = false;
+                    change = input.replace(letter.repeat(2), letter);
+
+                    if (change != input) {
+                        repetition = true;
+                        // Add it in variations
+                        variants.push(change);
+                        input = change;
+                    }
+                } while (repetition);
+            }
         }
 
         return variants;
@@ -195,6 +203,7 @@ export class DecentUsername {
     public removeSpecialChars(): void {
         this.forChars(this.specialsChars, (i, c) => {
             this.text = this.text.replaceAll(c, '');
+            return true;
         });
     }
 
@@ -206,20 +215,37 @@ export class DecentUsername {
      * @returns A list of possible variations for the current text
      */
     private getVariations(text: string): string[] {
-        let output: string[] = [text];
+        let output: string[] = [];
+        const textChars = text
+            .split('')
+            .map((v) => {
+                return v.charCodeAt(0);
+            })
+            .join('');
+
+        let counter = 0;
+        let lastChar = 0;
 
         this.forChars(this.lettersMap, (mapLetter, char) => {
-            let changedText = text.replace(char, mapLetter);
-
-            if (changedText != text) {
-                // Recursive changes
-                output = [...output, ...this.getVariations(changedText)];
+            counter++;
+            if (lastChar == char.charCodeAt(0)) {
+                return false;
             }
-        });
 
-        // Remove lines duplications
-        output = output.filter(function (value, index, array) {
-            return array.indexOf(value) === index;
+            let changedText = text.replace(char, mapLetter);
+            let charCodes = changedText
+                .split('')
+                .map((v) => {
+                    return v.charCodeAt(0);
+                })
+                .join('');
+
+            if (charCodes != textChars) {
+                // Recursive changes
+                output.push(changedText);
+            }
+
+            return true;
         });
 
         return output;
@@ -233,16 +259,19 @@ export class DecentUsername {
      */
     private forChars(
         input: any,
-        callback: (i: string, v: string, line: string) => void
+        callback: (i: string, v: string, line: string) => boolean
     ): void {
         const keys = Object.keys(input);
+        let output = true;
 
         for (const key of keys) {
             const values = Reflect.get(input, key);
 
             for (const value of values) {
-                callback(key, value, values);
+                output = callback(key, value, values);
+                if (!output) break;
             }
+            if (!output) break;
         }
     }
 }

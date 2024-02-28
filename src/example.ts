@@ -1,7 +1,9 @@
 // Import JS module with :
 import { DecentUsername, DecentUsernameProblem } from './index.js';
 
-const username = 'your-username';
+const username = 'iamNazі';
+// Even if it looks like, the "і" is a special char not equals to "i"
+
 console.log(`Let's validate '${username}' !`);
 
 // Test if your username is decent !
