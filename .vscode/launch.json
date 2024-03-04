@@ -18,6 +18,43 @@
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Run example",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/example.js",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "node",
+            "runtimeArgs": [],
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/build/**/*.js"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        }
+        ,
+        {
+            "name": "Run training",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/training.js",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "node",
+            "runtimeArgs": [],
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/build/**/*.js"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }
