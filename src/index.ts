@@ -37,20 +37,20 @@ export class DecentUsername {
     public variants: string[] = [];
 
     // Problem that is found for the given text
-    public problemType: DecentUsernameProblem;
+    public problemType: DecentUsernameProblem = DecentUsernameProblem.Undefined;
 
     // Incriminated text
     public violationText: string;
     // Incriminated word's position in string
     public violationPosition: number[];
 
-    // List of special chars to remove
+    // List of special chars to remove, can be changed if needed
     public specialsChars: string[];
-    // List of reserved words to detect
+    // List of reserved words to detect, can be changed if needed
     public reservedWords: string[];
-    // Letters to change by another
+    // Letters to change by another, can be changed if needed
     public lettersMap: any;
-    // List of banned words to detect
+    // List of banned words to detect, can be changed if needed
     public badWords: string[];
 
     /**
@@ -71,6 +71,7 @@ export class DecentUsername {
         this.lettersMap = lettersMap;
         this.badWords = badWords;
 
+        // Get alphabet
         const alpha = Array.from(Array(26)).map((e, i) => i + 97);
         this.alphabet = alpha.map((x) => String.fromCharCode(x));
     }
@@ -89,6 +90,8 @@ export class DecentUsername {
      * @returns true, text is decent, false it's not decent
      */
     public isValid(): boolean {
+        if (this.problemType == DecentUsernameProblem.Undefined)
+            throw 'Cannot get output of DecentUsername, please use validate() function before';
         return this.problemType == DecentUsernameProblem.Ok;
     }
 
@@ -118,7 +121,7 @@ export class DecentUsername {
         this.removeSpecialChars();
 
         // Get all possibles variation of text
-        this.variants = [this.text, ...this.getVariations(this.text)];
+        this.variants = [this.text, ...this.getLetterVariations(this.text)];
         this.variants = [...this.variants, ...this.clearRepeat(this.variants)];
 
         // Remove duplications
@@ -155,6 +158,87 @@ export class DecentUsername {
     }
 
     /**
+     * Returns the average of two numbers.
+     *
+     * @remarks
+     * This method is part of the {@link core-library#Statistics | Statistics subsystem}.
+     *
+     * @param x - The first input number
+     * @param y - The second input number
+     * @returns The arithmetic mean of `x` and `y`
+     *
+     * @beta
+     */
+    public removeSpecialChars(): void {
+        this.forChars(this.specialsChars, (i, c) => {
+            this.text = this.text.replaceAll(c, '');
+            return true;
+        });
+    }
+
+    /**
+     * Get the list of variation from the lettersMap
+     *
+     * @remarks
+     * Example : for text "b00ßs", variations will be "bo0ßs", "b00ßs", "booßs", "boobs", etc...
+     * @returns A list of possible variations for the current text
+     */
+    private getLetterVariations(text: string): string[] {
+        let output: string[] = [];
+        const textChars = text
+            .split('')
+            .map((v) => {
+                return v.charCodeAt(0);
+            })
+            .join('');
+
+        let counter = 0;
+
+        this.forChars(this.lettersMap, (mapLetter, char) => {
+            counter++;
+            let changedText = text.replace(char, mapLetter);
+            let charCodes = changedText
+                .split('')
+                .map((v) => {
+                    return v.charCodeAt(0);
+                })
+                .join('');
+
+            if (charCodes != textChars) {
+                // Recursive changes
+                output.push(changedText);
+            }
+
+            return true;
+        });
+
+        return output;
+
+        const variants = [];
+
+        for (let input of text) {
+            let repetition = false;
+            let change = '';
+
+            // For every letters of the alphabet
+            for (const letter of this.alphabet) {
+                // Clear all repeatition until no one left
+                do {
+                    repetition = false;
+                    change = input.replace(letter.repeat(2), letter);
+
+                    if (change != input) {
+                        repetition = true;
+                        // Add it in variations
+                        variants.push(change);
+                        input = change;
+                    }
+                } while (repetition);
+            }
+        }
+    }
+
+    /**
      * Replace all series of repeating letters by only one.
      * Example : "haapppyyyy" will be :
      *      [happpyyyy, happyyyy, hapyyyy, hapyyyy, etc..]
@@ -186,69 +270,6 @@ export class DecentUsername {
         }
 
         return variants;
-    }
-
-    /**
-     * Returns the average of two numbers.
-     *
-     * @remarks
-     * This method is part of the {@link core-library#Statistics | Statistics subsystem}.
-     *
-     * @param x - The first input number
-     * @param y - The second input number
-     * @returns The arithmetic mean of `x` and `y`
-     *
-     * @beta
-     */
-    public removeSpecialChars(): void {
-        this.forChars(this.specialsChars, (i, c) => {
-            this.text = this.text.replaceAll(c, '');
-            return true;
-        });
-    }
-
-    /**
-     * Get the list of variation from the lettersMap
-     *
-     * @remarks
-     * Example : for text "b00ßs", variations will be "bo0ßs", "b00ßs", "booßs", "boobs", etc...
-     * @returns A list of possible variations for the current text
-     */
-    private getVariations(text: string): string[] {
-        let output: string[] = [];
-        const textChars = text
-            .split('')
-            .map((v) => {
-                return v.charCodeAt(0);
-            })
-            .join('');
-
-        let counter = 0;
-        let lastChar = 0;
-
-        this.forChars(this.lettersMap, (mapLetter, char) => {
-            counter++;
-            if (lastChar == char.charCodeAt(0)) {
-                return false;
-            }
-
-            let changedText = text.replace(char, mapLetter);
-            let charCodes = changedText
-                .split('')
-                .map((v) => {
-                    return v.charCodeAt(0);
-                })
-                .join('');
-
-            if (charCodes != textChars) {
-                // Recursive changes
-                output.push(changedText);
-            }
-
-            return true;
-        });
-
-        return output;
     }
 
     /**
