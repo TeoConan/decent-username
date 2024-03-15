@@ -98,7 +98,7 @@ Unfortunately, there sometimes some false-positive (around 9.5%), this algorithm
 
 I have a problem with `json` import, if you have a solution, please read the next chapter
 
-```
+```shell
 (node:3480) ExperimentalWarning: Import assertions are not a stable feature of the JavaScript language. Avoid relying on their current behavior and syntax as those might change in a future version of Node.js.
 (Use `node --trace-warnings ...` to show where the warning was created)
 (node:3480) ExperimentalWarning: Importing JSON modules is an experimental feature and might change at any time
@@ -106,3 +106,13 @@ I have a problem with `json` import, if you have a solution, please read the nex
 
 ## Contributing
 
+For contributing, nothing easier !
+
+```shell
+git clone # Url of your fork
+cd decent-username
+npm run dev # Watch files changes
+npm start # To run example file that you can modify
+```
+
+And after you changes are done, you'll be able to do a `pull request` to the main `repository`
