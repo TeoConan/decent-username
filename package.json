@@ -1,6 +1,6 @@
 {
     "name": "decent-username",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "decent-username package is a library to check if a username doesn't contain offensive or bad words.",
     "scripts": {
         "start": "node --no-warnings ./build/example.js",
