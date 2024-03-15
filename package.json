@@ -1,6 +1,6 @@
 {
     "name": "decent-username",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "description": "decent-username package is a library to check if a username doesn't contain offensive or bad words.",
     "scripts": {
         "start": "node --no-warnings ./dist/example.js",
@@ -9,7 +9,7 @@
         "dev": "tsc -w",
         "build": "tsc",
         "clear": "rm -r ./dist/* || exit 1",
-        "postinstall": "tsc"
+        "postinstall": "tsc && mv ./src/ressources/ ./dist"
     },
     "author": "https://github.com/TeoConan",
     "homepage": "https://github.com/TeoConan/decent-username/tree/main",
