@@ -23,7 +23,9 @@ for (const username of tests) {
     if (!du.isValid()) {
         const highlight = chalk.red(chalk.underline(du.violationText));
         console.log(
-            `${logSymbols.warning} ${highlight} (${DecentUsernameProblem[du.problemType]})`
+            `${logSymbols.warning} ${highlight} (${
+                DecentUsernameProblem[du.problemType]
+            })`
         );
 
         errorCounter++;

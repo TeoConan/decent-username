@@ -1,10 +1,108 @@
 # decent-username
 
-`decent-username` is a library to check if a username doesn't contain offensive or bad words
+`decent-username` is a library to check if a username doesn't contain offensive or bad words.
 
-The `decent-username` package contains a `DecentUsername`class to check your username, here an example :
+Unlink `leo-profanity` package, `decent-username`transform all **homoglyph** in a real letter, replace special characters and supress char repetition
 
-```  
+## Installation
+
+You can install `decent-username` from `npm`
+
+```shell
+npm install decent-username
+```
+
+## Example
+
+The `decent-username` package contains a `DecentUsername`class to check your username, here an example
+More details in `src/example.ts` file
+
+```  typescript
+// Import JS module with :
+import { DecentUsername, DecentUsernameProblem } from 'decent-username';
+
+const username = 'iamnâZｉｉｉt';
+// Even if it looks like, the "ｉ" is a special char not equals to "i"
+
+console.log(`Let's validate '${username}' !`);
+
+// Test if your username is decent !
+const decentUsername = new DecentUsername(username);
+// Validate it in a second time, if you want to change somes settings before validation
+decentUsername.validate();
+
+// Check if your username is decent
+if (decentUsername.isValid()) {
+    console.log('This username is decent, you can use it !');
+} else {
+    console.log('This username is not decent !');
+}
 
 ```
+
+## Customize
+
+You can add your own word librairy very quickly, in the future, another languages than english will be available
+
+### Add your own dictionary 
+
+If you look at `src/index.ts` comments, you can see this :
+
+```typescript
+// List of special chars to remove, can be changed if needed
+public specialsChars: string[];
+// List of reserved words to detect, can be changed if needed
+public reservedWords: string[];
+// Letters to change by another, can be changed if needed
+public lettersMap: any;
+// List of banned words to detect, can be changed if needed
+public badWords: string[];
+```
+
+So to change some dictionary for a custom usage you can do it with :
+
+```typescript
+const decentUsername = new DecentUsername(username);
+decentUsername.specialsChars = ['$', '*', '`', ' ', '#'] // etc...
+decentUsername.reservedWords = ['settings', 'home'] // etc...
+decentUsername.lettersMap = {
+    "a": "ÀÁÂÃÄÅâãα@",
+    "b": "ΒВЬＢｂ8",
+    "c": "Ｃｃ",
+    "d": "ĎďĐđԁժⅾＤｄ",
+} // etc...
+// Example for french
+decentUsername.badWords = ['idiot', 'tueur', 'crétin', 'abruti'] // etc...
+decentUsername.validate();
+```
+
+## Commands
+
+There is few command to use to "play" and use `decent-username`
+
+- `npm start` : Basic start, just run the example
+- `npm run build` : For contributing, build the Typescript package
+- `npm run test` : Run  ~1000 usernames tests and calculate compute time
+- `npm run train`: Enter in a TUI application to check usernames one by one to find false-positive and signal them
+- `npm run dev`: For contributing, it just run `tsc -w` that compile Typescript when a file change
+- `npm run clear`: Clean build file to clear cache
+- `npm run postinstall`: For package deployment only
+
+## Reported bug
+
+### False positive
+
+Unfortunately, there sometimes some false-positive (around 9.5%), this algorithm can be tricked
+
+### Import assertions
+
+I have a problem with `json` import, if you have a solution, please read the next chapter
+
+```
+(node:3480) ExperimentalWarning: Import assertions are not a stable feature of the JavaScript language. Avoid relying on their current behavior and syntax as those might change in a future version of Node.js.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3480) ExperimentalWarning: Importing JSON modules is an experimental feature and might change at any time
+```
+
+## Contributing
 

@@ -12,7 +12,7 @@ import badWords from './ressources/badWords.json' assert { type: 'json' };
  * Type of problem (or not) that the algorithm found
  */
 export enum DecentUsernameProblem {
-    Undefined, // Text is not yet analysed
+    Undefined, // Text is not analysed yet
     Ok, // Nothing problematic found in text
     Banned, // A reserved has been found in variants
     Reserved, // A reserved has been found in variants
@@ -64,7 +64,7 @@ export class DecentUsername {
         this.minLength = minLength;
         this.maxLength = maxLength;
 
-        this.text = text.toLocaleLowerCase();
+        this.text = text.trim().toLocaleLowerCase();
         this.problemType = DecentUsernameProblem.Ok;
         this.specialsChars = specialsChars;
         this.reservedWords = reservedWords;
@@ -121,7 +121,7 @@ export class DecentUsername {
         this.removeSpecialChars();
 
         // Get all possibles variation of text
-        this.variants = [this.text, ...this.getLetterVariations(this.text)];
+        this.variants = [this.text, this.reMapLetters(this.text)];
         this.variants = [...this.variants, ...this.clearRepeat(this.variants)];
 
         // Remove duplications
@@ -176,6 +176,15 @@ export class DecentUsername {
         });
     }
 
+    public reMapLetters(text: string): string {
+        this.forChars(this.lettersMap, (mapLetter, char) => {
+            text = text.replaceAll(char, mapLetter);
+            return true;
+        });
+
+        return text;
+    }
+
     /**
      * Get the list of variation from the lettersMap
      *
@@ -196,7 +205,8 @@ export class DecentUsername {
 
         this.forChars(this.lettersMap, (mapLetter, char) => {
             counter++;
-            let changedText = text.replace(char, mapLetter);
+            let changedText = text.replaceAll(char, mapLetter);
+            return true;
             let charCodes = changedText
                 .split('')
                 .map((v) => {
