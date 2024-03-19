@@ -1,5 +1,14 @@
 // Import JS module with :
 import { DecentUsername, DecentUsernameProblem } from './index.js';
+// For Common JS
+//const { DecentUsername, DecentUsernameProblem } = require('decent-username');
+
+console.log('This project is a library, you cannot "start" it.');
+console.log(
+    'But you can look at this example and check exemple.js to learn how to use it\n'
+);
+
+console.log('\n -- Example -- ');
 
 const username = 'iamnâZｉｉｉt';
 // Even if it looks like, the "ｉ" is a special char not equals to "i"

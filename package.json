@@ -1,15 +1,12 @@
 {
     "name": "decent-username",
-    "version": "2.0.1",
+    "version": "2.1.1",
     "types": "./src/index.d.ts",
     "description": "decent-username package is a library to check if a username doesn't contain offensive or bad words.",
     "scripts": {
         "start": "node ./dist/example.js",
-        "test": "node ./dist/test.js",
-        "train": "node ./dist/training.js",
         "dev": "tsc -w",
         "build": "tsc",
-        "clear": "rm -r ./dist/* || exit 1",
         "postinstall": "tsc"
     },
     "author": "https://github.com/TeoConan",
@@ -19,11 +16,7 @@
     "type": "module",
     "license": "ISC",
     "dependencies": {
-        "@types/terminal-kit": "^2.5.6",
-        "chalk": "^5.3.0",
-        "log-symbols": "^6.0.0",
         "ts-node": "^10.9.2",
-        "typescript": "^5.3.3",
-        "terminal-kit": "^3.0.2"
+        "typescript": "^5.3.3"
     }
 }
