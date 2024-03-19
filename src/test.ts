@@ -1,6 +1,6 @@
 import { DecentUsername, DecentUsernameProblem } from './index.js';
-import testUsernames from './ressources/testsUsername.json' assert { type: 'json' };
-import testExtended from './ressources/testsUsernameExtended.json' assert { type: 'json' };
+import testUsernames from './ressources/testsUsername.js';
+import testExtended from './ressources/testsUsernameExtended.js';
 
 import logSymbols from 'log-symbols';
 import chalk from 'chalk';

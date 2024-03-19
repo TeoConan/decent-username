@@ -3,8 +3,8 @@ import terminalKit from 'terminal-kit';
 const { terminal } = terminalKit;
 import fs from 'fs';
 import path from 'node:path';
-import testUsernames from './ressources/testsUsername.json' assert { type: 'json' };
-import testExtended from './ressources/testsUsernameExtended.json' assert { type: 'json' };
+import testUsernames from './ressources/testsUsername.js';
+import testExtended from './ressources/testsUsernameExtended.js';
 
 terminal.cyan('The hall is spacious. Someone lighted few chandeliers.\n');
 terminal.cyan('There are doorways south and west.\n');

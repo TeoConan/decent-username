@@ -1,12 +1,12 @@
 /* Import all required ressources */
 // Characters to remove from input
-import specialsChars from './ressources/specialschars.json' assert { type: 'json' };
+import specialsChars from './ressources/specialschars.js';
 // Safe words but reserved by the system
-import reservedWords from './ressources/reserved.json' assert { type: 'json' };
+import reservedWords from './ressources/reserved.js';
 // Json of mapped letters, transform some specific char to another
-import lettersMap from './ressources/lettersMap.json' assert { type: 'json' };
+import lettersMap from './ressources/lettersMap.js';
 // Banned words, like injures etc...
-import badWords from './ressources/badWords.json' assert { type: 'json' };
+import badWords from './ressources/badWords.js';
 
 /**
  * Type of problem (or not) that the algorithm found
@@ -158,16 +158,12 @@ export class DecentUsername {
     }
 
     /**
-     * Returns the average of two numbers.
+     * Remove all simple specials chars found in this.specialsChars
      *
      * @remarks
-     * This method is part of the {@link core-library#Statistics | Statistics subsystem}.
+     * Manipulate this.text directly
      *
-     * @param x - The first input number
-     * @param y - The second input number
-     * @returns The arithmetic mean of `x` and `y`
-     *
-     * @beta
+     * @returns void
      */
     public removeSpecialChars(): void {
         this.forChars(this.specialsChars, (i, c) => {
@@ -176,6 +172,14 @@ export class DecentUsername {
         });
     }
 
+    /**
+     * Remap all special letters in another to avoid homoglyph tries
+     *
+     * @remarks
+     * Letters can be found in ./ressources/lettersMap.js
+     *
+     * @returns string
+     */
     public reMapLetters(text: string): string {
         this.forChars(this.lettersMap, (mapLetter, char) => {
             text = text.replaceAll(char, mapLetter);
@@ -186,76 +190,13 @@ export class DecentUsername {
     }
 
     /**
-     * Get the list of variation from the lettersMap
-     *
-     * @remarks
-     * Example : for text "b00ßs", variations will be "bo0ßs", "b00ßs", "booßs", "boobs", etc...
-     * @returns A list of possible variations for the current text
-     */
-    private getLetterVariations(text: string): string[] {
-        let output: string[] = [];
-        const textChars = text
-            .split('')
-            .map((v) => {
-                return v.charCodeAt(0);
-            })
-            .join('');
-
-        let counter = 0;
-
-        this.forChars(this.lettersMap, (mapLetter, char) => {
-            counter++;
-            let changedText = text.replaceAll(char, mapLetter);
-            return true;
-            let charCodes = changedText
-                .split('')
-                .map((v) => {
-                    return v.charCodeAt(0);
-                })
-                .join('');
-
-            if (charCodes != textChars) {
-                // Recursive changes
-                output.push(changedText);
-            }
-
-            return true;
-        });
-
-        return output;
-
-        const variants = [];
-
-        for (let input of text) {
-            let repetition = false;
-            let change = '';
-
-            // For every letters of the alphabet
-            for (const letter of this.alphabet) {
-                // Clear all repeatition until no one left
-                do {
-                    repetition = false;
-                    change = input.replace(letter.repeat(2), letter);
-
-                    if (change != input) {
-                        repetition = true;
-                        // Add it in variations
-                        variants.push(change);
-                        input = change;
-                    }
-                } while (repetition);
-            }
-        }
-    }
-
-    /**
      * Replace all series of repeating letters by only one.
      * Example : "haapppyyyy" will be :
      *      [happpyyyy, happyyyy, hapyyyy, hapyyyy, etc..]
      *
      * @returns New variants of text
      */
-    private clearRepeat(inputs: string[]): string[] {
+    public clearRepeat(inputs: string[]): string[] {
         const variants = [];
 
         for (let input of inputs) {
