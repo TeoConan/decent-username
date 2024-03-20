@@ -81,10 +81,7 @@ There is few command to use to "play" and use `decent-username`
 
 -   `npm start` : Basic start, just run the example
 -   `npm run build` : For contributing, build the Typescript package
--   `npm run test` : Run ~1000 usernames tests and calculate compute time
--   `npm run train`: Enter in a TUI application to check usernames one by one to find false-positive and signal them
 -   `npm run dev`: For contributing, it just run `tsc -w` that compile Typescript when a file change
--   `npm run clear`: Clean build file to clear cache
 -   `npm run postinstall`: For package deployment only
 
 ## Reported bug

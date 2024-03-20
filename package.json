@@ -1,6 +1,6 @@
 {
     "name": "decent-username",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "types": "./src/index.d.ts",
     "description": "decent-username package is a library to check if a username doesn't contain offensive or bad words.",
     "scripts": {
