@@ -2,7 +2,7 @@
 
 `decent-username` is a library to check if a username doesn't contain offensive or bad words.
 
-Unlink `leo-profanity` package, `decent-username`transform all **homoglyph** in a real letter, replace special characters and supress char repetition
+Unlike `leo-profanity` package, `decent-username`transform all **homoglyph** in a real letter, replace special characters and supress char repetition
 
 ## Installation
 
@@ -17,7 +17,7 @@ npm install decent-username
 The `decent-username` package contains a `DecentUsername`class to check your username, here an example
 More details in `src/example.ts` file
 
-```  typescript
+```typescript
 // Import JS module with :
 import { DecentUsername, DecentUsernameProblem } from 'decent-username';
 
@@ -37,14 +37,13 @@ if (decentUsername.isValid()) {
 } else {
     console.log('This username is not decent !');
 }
-
 ```
 
 ## Customize
 
 You can add your own word librairy very quickly, in the future, another languages than english will be available
 
-### Add your own dictionary 
+### Add your own dictionary
 
 If you look at `src/index.ts` comments, you can see this :
 
@@ -63,16 +62,16 @@ So to change some dictionary for a custom usage you can do it with :
 
 ```typescript
 const decentUsername = new DecentUsername(username);
-decentUsername.specialsChars = ['$', '*', '`', ' ', '#'] // etc...
-decentUsername.reservedWords = ['settings', 'home'] // etc...
+decentUsername.specialsChars = ['$', '*', '`', ' ', '#']; // etc...
+decentUsername.reservedWords = ['settings', 'home']; // etc...
 decentUsername.lettersMap = {
-    "a": "ÀÁÂÃÄÅâãα@",
-    "b": "ΒВЬＢｂ8",
-    "c": "Ｃｃ",
-    "d": "ĎďĐđԁժⅾＤｄ",
-} // etc...
+    a: 'ÀÁÂÃÄÅâãα@',
+    b: 'ΒВЬＢｂ8',
+    c: 'Ｃｃ',
+    d: 'ĎďĐđԁժⅾＤｄ',
+}; // etc...
 // Example for french
-decentUsername.badWords = ['idiot', 'tueur', 'crétin', 'abruti'] // etc...
+decentUsername.badWords = ['idiot', 'tueur', 'crétin', 'abruti']; // etc...
 decentUsername.validate();
 ```
 
@@ -80,13 +79,13 @@ decentUsername.validate();
 
 There is few command to use to "play" and use `decent-username`
 
-- `npm start` : Basic start, just run the example
-- `npm run build` : For contributing, build the Typescript package
-- `npm run test` : Run  ~1000 usernames tests and calculate compute time
-- `npm run train`: Enter in a TUI application to check usernames one by one to find false-positive and signal them
-- `npm run dev`: For contributing, it just run `tsc -w` that compile Typescript when a file change
-- `npm run clear`: Clean build file to clear cache
-- `npm run postinstall`: For package deployment only
+-   `npm start` : Basic start, just run the example
+-   `npm run build` : For contributing, build the Typescript package
+-   `npm run test` : Run ~1000 usernames tests and calculate compute time
+-   `npm run train`: Enter in a TUI application to check usernames one by one to find false-positive and signal them
+-   `npm run dev`: For contributing, it just run `tsc -w` that compile Typescript when a file change
+-   `npm run clear`: Clean build file to clear cache
+-   `npm run postinstall`: For package deployment only
 
 ## Reported bug
 
