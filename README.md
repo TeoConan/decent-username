@@ -90,16 +90,6 @@ There is few command to use to "play" and use `decent-username`
 
 Unfortunately, there sometimes some false-positive (around 9.5%), this algorithm can be tricked
 
-### Import assertions
-
-I have a problem with `json` import, if you have a solution, please read the next chapter
-
-```shell
-(node:3480) ExperimentalWarning: Import assertions are not a stable feature of the JavaScript language. Avoid relying on their current behavior and syntax as those might change in a future version of Node.js.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:3480) ExperimentalWarning: Importing JSON modules is an experimental feature and might change at any time
-```
-
 ## Contributing
 
 For contributing, nothing easier !
